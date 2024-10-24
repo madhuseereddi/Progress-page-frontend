@@ -189,6 +189,7 @@ class Signup extends Component {
       const response = await fetch("https://progress-be.onrender.com/verification-status", { // Updated URL
         method: "GET",
         credentials: "include",
+        mode: "no-cors"
       });
 
       const textResponse = await response.text();
