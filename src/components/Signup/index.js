@@ -22,7 +22,7 @@ class Signup extends Component {
     };
 
     // Initialize the socket connection
-    this.socket = io('http://192.168.1.5:3000');
+    this.socket = io('http://192.168.1.5:3000'); // Adjust this if necessary for production
   }
 
   componentDidMount() {
@@ -96,7 +96,7 @@ class Signup extends Component {
     this.setState({ isLoadingVerifyMail: true });
 
     try {
-      const response = await fetch("http://localhost:5000/verify-mail", {
+      const response = await fetch("https://progress-page-backend2.onrender.com/verify-mail", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, status: "mail sent to user" }),
@@ -131,7 +131,7 @@ class Signup extends Component {
     this.setState({ isLoadingGetOtp: true });
 
     try {
-      const response = await fetch("http://localhost:5000/send-otp", {
+      const response = await fetch("https://progress-page-backend2.onrender.com/send-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
@@ -163,7 +163,7 @@ class Signup extends Component {
     this.setState({ isLoadingVerifyOtp: true });
 
     try {
-      const response = await fetch("http://localhost:5000/verify-otp", {
+      const response = await fetch("https://progress-page-backend2.onrender.com/verify-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, otp: otpString }),
@@ -186,7 +186,7 @@ class Signup extends Component {
 
   fetchVerificationStatus = async () => {
     try {
-      const response = await fetch("http://localhost:5000/verification-status", {
+      const response = await fetch("https://progress-page-backend2.onrender.com/verification-status", {
         method: "GET",
         credentials: "include",
       });
@@ -301,6 +301,8 @@ class Signup extends Component {
             )}
           </div>
         )}
+
+        <p>{otpStatusMessage}</p>
       </div>
     );
   }
