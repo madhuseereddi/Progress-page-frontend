@@ -22,7 +22,7 @@ class Signup extends Component {
     };
 
     // Initialize the socket connection
-    this.socket = io('https://progress-be.onrender.com'); // Updated to the new backend URL
+    this.socket = io('https://separated-dot-variraptor.glitch.me'); // Updated to the new backend URL
   }
 
   componentDidMount() {
@@ -96,7 +96,7 @@ class Signup extends Component {
     this.setState({ isLoadingVerifyMail: true });
 
     try {
-      const response = await fetch("https://progress-be.onrender.com/verify-mail", { // Updated URL
+      const response = await fetch("https://separated-dot-variraptor.glitch.me/verify-mail", { // Updated URL
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, status: "mail sent to user" }),
@@ -131,7 +131,7 @@ class Signup extends Component {
     this.setState({ isLoadingGetOtp: true });
 
     try {
-      const response = await fetch("https://progress-be.onrender.com/send-otp", { // Updated URL
+      const response = await fetch("https://separated-dot-variraptor.glitch.me/send-otp", { // Updated URL
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
@@ -163,7 +163,7 @@ class Signup extends Component {
     this.setState({ isLoadingVerifyOtp: true });
 
     try {
-      const response = await fetch("https://progress-be.onrender.com/verify-otp", { // Updated URL
+      const response = await fetch("https://separated-dot-variraptor.glitch.me/verify-otp", { // Updated URL
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, otp: otpString }),
@@ -186,16 +186,13 @@ class Signup extends Component {
 
   fetchVerificationStatus = async () => {
     try {
-      const response = await fetch("https://progress-be.onrender.com/verification-status", { // Updated URL
+      const response = await fetch("https://separated-dot-variraptor.glitch.me/verification-status", { // Updated URL
         method: "GET",
         credentials: "include",
-        mode: "no-cors"
       });
 
-      const textResponse = await response.text();
-      console.log("Raw response:", textResponse);
-      const data = JSON.parse(textResponse);
-
+      const data = await response.json();
+      
       if (data.message.includes("accept")) {
         this.setState({
           mailStatus: "accepted",
@@ -303,7 +300,7 @@ class Signup extends Component {
           </div>
         )}
 
-        <p>{otpStatusMessage}</p>
+        {otpStatusMessage && <p>{otpStatusMessage}</p>}
       </div>
     );
   }
