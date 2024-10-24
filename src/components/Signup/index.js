@@ -22,7 +22,7 @@ class Signup extends Component {
     };
 
     // Initialize the socket connection
-    this.socket = io('https://progress-page-frontend2.onrender.com'); // Adjust this if necessary for production
+    this.socket = io('https://progress-be.onrender.com'); // Updated to the new backend URL
   }
 
   componentDidMount() {
@@ -96,7 +96,7 @@ class Signup extends Component {
     this.setState({ isLoadingVerifyMail: true });
 
     try {
-      const response = await fetch("https://progress-page-frontend2.onrender.com/verify-mail", {
+      const response = await fetch("https://progress-be.onrender.com/verify-mail", { // Updated URL
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, status: "mail sent to user" }),
@@ -131,7 +131,7 @@ class Signup extends Component {
     this.setState({ isLoadingGetOtp: true });
 
     try {
-      const response = await fetch("https://progress-page-frontend2.onrender.com/send-otp", {
+      const response = await fetch("https://progress-be.onrender.com/send-otp", { // Updated URL
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
@@ -163,7 +163,7 @@ class Signup extends Component {
     this.setState({ isLoadingVerifyOtp: true });
 
     try {
-      const response = await fetch("https://progress-page-frontend2.onrender.com/verify-otp", {
+      const response = await fetch("https://progress-be.onrender.com/verify-otp", { // Updated URL
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, otp: otpString }),
@@ -186,7 +186,7 @@ class Signup extends Component {
 
   fetchVerificationStatus = async () => {
     try {
-      const response = await fetch("https://progress-page-frontend2.onrender.com/verification-status", {
+      const response = await fetch("https://progress-be.onrender.com/verification-status", { // Updated URL
         method: "GET",
         credentials: "include",
       });
