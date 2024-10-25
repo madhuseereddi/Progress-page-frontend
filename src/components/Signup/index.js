@@ -187,7 +187,7 @@ class Signup extends Component {
   fetchVerificationStatus = async () => {
     const {email} = this.state
     try {
-      const response = await fetch(`https://separated-dot-variraptor.glitch.me/verification-status?email=${email}`,{
+      const response = await fetch(`https://separated-dot-variraptor.glitch.me/verification-status/${email}`,{
         method: "GET",
         credentials: "include",
       });
