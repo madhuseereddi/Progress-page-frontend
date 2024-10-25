@@ -13,16 +13,16 @@ class Signup extends Component {
       isOtpSent: false,
       isOtpComplete: false,
       isOtpVerified: false,
-      isLoadingVerifyMail: false,
-      isLoadingGetOtp: false,
-      isLoadingVerifyOtp: false,
-      mailStatus: null,
+      isLoadingVerifyMail: false, // Loading state for verification mail
+      isLoadingGetOtp: false, // Loading state for OTP
+      isLoadingVerifyOtp: false, // Loading state for OTP verification
+      mailStatus: null, // Can be 'pending', 'accepted', 'rejected'
       uniqueId: "",
       otpStatusMessage: "",
     };
 
     // Initialize the socket connection
-    this.socket = io('https://separated-dot-variraptor.glitch.me');
+    this.socket = io('https://separated-dot-variraptor.glitch.me'); // Updated to the new backend URL
   }
 
   componentDidMount() {
@@ -35,7 +35,6 @@ class Signup extends Component {
     clearInterval(this.intervalId); // Clear interval on unmount
   }
 
-  // Socket Event Handlers
   handleOtpSent = (data) => {
     this.setState({
       isOtpSent: true,
@@ -44,7 +43,7 @@ class Signup extends Component {
     });
   };
 
-  handleVerificationAccepted = () => {
+  handleVerificationAccepted = (data) => {
     this.setState({
       mailStatus: "accepted",
       otpStatusMessage: "Verification successful. Your application is accepted.",
@@ -52,14 +51,13 @@ class Signup extends Component {
     });
   };
 
-  handleVerificationRejected = () => {
+  handleVerificationRejected = (data) => {
     this.setState({
       mailStatus: "rejected",
       otpStatusMessage: "Verification was rejected.",
     });
   };
 
-  // Input Handlers
   handleInputChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
   };
@@ -71,8 +69,7 @@ class Signup extends Component {
       newOtp[index] = value;
       this.setState({ otp: newOtp }, this.checkOtpComplete);
 
-      // Move focus to the next input
-      if (value && element.target.nextSibling) {
+      if (value !== "" && element.target.nextSibling) {
         element.target.nextSibling.focus();
       }
     }
@@ -89,7 +86,6 @@ class Signup extends Component {
     this.setState({ isOtpComplete });
   };
 
-  // API Call Handlers
   handleVerifyMail = async () => {
     const { email } = this.state;
     if (!email) {
@@ -100,13 +96,15 @@ class Signup extends Component {
     this.setState({ isLoadingVerifyMail: true });
 
     try {
-      const response = await fetch("https://separated-dot-variraptor.glitch.me/verify-mail", {
+      const response = await fetch("https://separated-dot-variraptor.glitch.me/verify-mail", { // Updated URL
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, status: "mail sent to user" }),
       });
 
       const data = await response.json();
+
+      console.log(data)
 
       if (response.ok) {
         this.setState({
@@ -135,7 +133,7 @@ class Signup extends Component {
     this.setState({ isLoadingGetOtp: true });
 
     try {
-      const response = await fetch("https://separated-dot-variraptor.glitch.me/send-otp", {
+      const response = await fetch("https://separated-dot-variraptor.glitch.me/send-otp", { // Updated URL
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
@@ -143,7 +141,7 @@ class Signup extends Component {
 
       const data = await response.json();
       if (response.ok) {
-        this.handleOtpSent(data);
+        this.setState({ isOtpSent: true });
       } else {
         alert(data.message || "Error sending OTP");
       }
@@ -167,7 +165,7 @@ class Signup extends Component {
     this.setState({ isLoadingVerifyOtp: true });
 
     try {
-      const response = await fetch("https://separated-dot-variraptor.glitch.me/verify-otp", {
+      const response = await fetch("https://separated-dot-variraptor.glitch.me/verify-otp", { // Updated URL
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, otp: otpString }),
@@ -175,7 +173,7 @@ class Signup extends Component {
 
       const data = await response.json();
       if (response.ok) {
-        this.handleVerificationAccepted();
+        this.setState({ isOtpVerified: true });
         alert(data.message);
       } else {
         alert(data.message || "Error verifying OTP");
@@ -189,11 +187,9 @@ class Signup extends Component {
   };
 
   fetchVerificationStatus = async () => {
-    const { email } = this.state;
-    if (!email) return; // Ensure email is present
-
+    const {email} = this.state
     try {
-      const response = await fetch(`https://separated-dot-variraptor.glitch.me/verification-status/${email}`, {
+      const response = await fetch(`https://separated-dot-variraptor.glitch.me/verification-status/${email}`,{
         method: "GET",
         credentials: "include",
       });
@@ -201,9 +197,15 @@ class Signup extends Component {
       const data = await response.json();
       
       if (data.message.includes("accept")) {
-        this.handleVerificationAccepted();
+        this.setState({
+          mailStatus: "accepted",
+          otpStatusMessage: "Verification accepted!",
+        });
       } else if (data.message.includes("reject")) {
-        this.handleVerificationRejected();
+        this.setState({
+          mailStatus: "rejected",
+          otpStatusMessage: "Verification rejected.",
+        });
       } else {
         this.setState({ otpStatusMessage: data.message });
       }
