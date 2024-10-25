@@ -22,12 +22,12 @@ class Signup extends Component {
     };
 
     // Initialize the socket connection
-    this.socket = io('https://separated-dot-variraptor.glitch.me'); // Updated to the new backend URL
+    this.socket = io('https://sharp-instinctive-ceres.glitch.me'); // Updated to the new backend URL
   }
 
   componentDidMount() {
     this.fetchVerificationStatus(); // Initial fetch
-    this.intervalId = setInterval(this.fetchVerificationStatus, 5000); // Fetch verification status every 5s
+    this.intervalId = setInterval(this.fetchVerificationStatus, 5000); 
   }
 
   componentWillUnmount() {
@@ -96,7 +96,7 @@ class Signup extends Component {
     this.setState({ isLoadingVerifyMail: true });
 
     try {
-      const response = await fetch("https://separated-dot-variraptor.glitch.me/verify-mail", { // Updated URL
+      const response = await fetch("https://sharp-instinctive-ceres.glitch.me/verify-mail", { // Updated URL
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, status: "mail sent to user" }),
@@ -133,7 +133,7 @@ class Signup extends Component {
     this.setState({ isLoadingGetOtp: true });
 
     try {
-      const response = await fetch("https://separated-dot-variraptor.glitch.me/send-otp", { // Updated URL
+      const response = await fetch("https://sharp-instinctive-ceres.glitch.me/send-otp", { // Updated URL
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
@@ -165,7 +165,7 @@ class Signup extends Component {
     this.setState({ isLoadingVerifyOtp: true });
 
     try {
-      const response = await fetch("https://separated-dot-variraptor.glitch.me/verify-otp", { // Updated URL
+      const response = await fetch("https://sharp-instinctive-ceres.glitch.me/verify-otp", { // Updated URL
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, otp: otpString }),
@@ -187,33 +187,48 @@ class Signup extends Component {
   };
 
   fetchVerificationStatus = async () => {
-    const {email} = this.state
+    const { email } = this.state;
     try {
-      const response = await fetch(`https://separated-dot-variraptor.glitch.me/verification-status/${email}`,{
+      const response = await fetch(`https://sharp-instinctive-ceres.glitch.me/verification-status/${email}`, {
         method: "GET",
         credentials: "include",
       });
 
+
+  
+      // Check if response is okay (status in the range 200-299)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
       const data = await response.json();
-      
-      if (data.message.includes("accept")) {
-        this.setState({
-          mailStatus: "accepted",
-          otpStatusMessage: "Verification accepted!",
-        });
-      } else if (data.message.includes("reject")) {
-        this.setState({
-          mailStatus: "rejected",
-          otpStatusMessage: "Verification rejected.",
-        });
+
+      console.log(data)
+  
+      // Check if data.message exists before using it
+      if (data.message) {
+        if (data.message.includes("accept")) {
+          this.setState({
+            mailStatus: "accepted",
+            otpStatusMessage: "Verification accepted!",
+          });
+        } else if (data.message.includes("reject")) {
+          this.setState({
+            mailStatus: "rejected",
+            otpStatusMessage: "Verification rejected.",
+          });
+        } else {
+          this.setState({ otpStatusMessage: data.message });
+        }
       } else {
-        this.setState({ otpStatusMessage: data.message });
+        this.setState({ otpStatusMessage: "Unexpected response format." });
       }
     } catch (error) {
       console.error("Error fetching verification status:", error);
+      this.setState({ otpStatusMessage: "An error occurred while fetching verification status." });
     }
   };
-
+  
   render() {
     const {
       email,
@@ -288,10 +303,7 @@ class Signup extends Component {
                     onKeyDown={(e) => this.handleOtpBackspace(e, index)}
                   />
                 ))}
-                <button
-                  onClick={this.handleVerifyOtp}
-                  disabled={isLoadingVerifyOtp || !isOtpComplete}
-                >
+                <button onClick={this.handleVerifyOtp} disabled={!isOtpComplete || isLoadingVerifyOtp}>
                   {isLoadingVerifyOtp ? (
                     <TailSpin height="24" width="24" color="#ffffff" ariaLabel="loading" />
                   ) : (
