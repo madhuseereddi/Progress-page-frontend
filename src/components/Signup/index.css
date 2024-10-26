@@ -32,7 +32,7 @@
 button {
   margin-top: 15px;
   padding: 10px 20px;
-  background-color: #4caf50;
+  background-color: #00a3e6;
   color: white;
   border: none;
   border-radius: 5px;
@@ -45,4 +45,97 @@ button:disabled {
 
 h4 {
   text-align: center;
+}
+.full-page-login{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  height: 100vh;
+  background-color: #e5f7ff;
+}
+.main-img{
+  height: 350px;
+}
+.signup-container{
+  background-color: white;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  width: 400px;
+  padding: 10px;
+}
+.input1 {
+  width: 90%;
+  height: 30px;
+  margin-top: 20px;
+  outline: 0px;
+  border-radius: 4px;
+  border: 0.5px solid rgb(200, 199, 199);
+  padding-left: 10px;
+  font-size: 15px;
+  transition: box-shadow 0.3s ease; /* Smooth transition for shadow */
+  color: gray;
+}
+
+.input1:focus {
+  box-shadow: 0px 0px 2px 2px rgba(173, 216, 230, 0.668); /* Light blue shadow on focus */
+  border-color: lightblue; /* Optional: change border color to match shadow */
+}
+
+.input2 { 
+
+  margin-top: 10px;
+  outline: 0;
+  border-radius: 4px;
+  border: 0.5px solid rgb(200, 199, 199);
+  font-size: 10px; /* Increase font size slightly if desired */
+  text-align: center; /* Center align text */
+  transition: box-shadow 0.3s ease; /* Smooth transition for shadow */
+}
+
+.input2:focus { 
+  box-shadow: 0px 0px 2px 2px rgba(173, 216, 230, 0.668); /* Light blue shadow on focus */
+  border-color: lightblue; /* Optional: change border color to match shadow */
+}
+
+.header{
+  background-color: #00a5e672;
+  color: white;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+
+
+}
+.main-logo1{
+  height: 60px;
+  margin-top: 10px;
+
+}
+.head2{
+  margin: 10px;
+  font-size: 15px;
+}
+.otp-input{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+@media (max-width: 600px) {
+  .main-img{
+    display: none;
+  }
+  .signup-container{
+    background-color: white;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    width: 300px;
+    padding: 10px;
+    margin: 30px;
+    box-sizing: content-box;
+  }
 }

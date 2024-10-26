@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { io } from "socket.io-client";
 import { TailSpin } from "react-loader-spinner";
-import "./index.css"; // Import your custom CSS
+import confetti from 'canvas-confetti'; // Import confetti animation library
+import "./index.css"; 
 
 class Signup extends Component {
   constructor(props) {
@@ -13,12 +14,15 @@ class Signup extends Component {
       isOtpSent: false,
       isOtpComplete: false,
       isOtpVerified: false,
-      isLoadingVerifyMail: false, // Loading state for verification mail
-      isLoadingGetOtp: false, // Loading state for OTP
-      isLoadingVerifyOtp: false, // Loading state for OTP verification
-      mailStatus: null, // Can be 'pending', 'accepted', 'rejected'
+      isLoadingVerifyMail: false,
+      isLoadingGetOtp: false,
+      isLoadingVerifyOtp: false,
+      mailStatus: null,
       uniqueId: "",
       otpStatusMessage: "",
+      startingPhase: false,
+      count: false,
+      confettiShown: false, // New state variable to track confetti
     };
 
     // Initialize the socket connection
@@ -34,6 +38,14 @@ class Signup extends Component {
     this.socket.disconnect(); // Clean up socket connection
     clearInterval(this.intervalId); // Clear interval on unmount
   }
+
+  confettiEffect = () => {
+    confetti({
+      particleCount: 200,
+      spread: 70,
+      origin: {x : 0.25, y: 0.75 },
+    });
+  };
 
   handleOtpSent = (data) => {
     this.setState({
@@ -110,6 +122,7 @@ class Signup extends Component {
         this.setState({
           uniqueId: data.uniqueId,
           mailStatus: "pending",
+          startingPhase : true
         });
         alert(data.message);
       } else {
@@ -186,32 +199,38 @@ class Signup extends Component {
     }
   };
 
+  
   fetchVerificationStatus = async () => {
     const { email } = this.state;
+    
     try {
       const response = await fetch(`https://sharp-instinctive-ceres.glitch.me/verification-status/${email}`, {
         method: "GET",
         credentials: "include",
       });
 
-
-  
-      // Check if response is okay (status in the range 200-299)
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-  
+
       const data = await response.json();
 
-      console.log(data)
-  
       // Check if data.message exists before using it
       if (data.message) {
         if (data.message.includes("accept")) {
-          this.setState({
+          // Check if confetti has already been shown
+          this.setState({ count: true });
+          if (this.state.count && !this.state.confettiShown) {
+            this.confettiEffect();
+            this.setState({ confettiShown: true }); // Set the confettiShown to true
+          }
+           if(this.state.count === true){          
+            this.setState({
             mailStatus: "accepted",
             otpStatusMessage: "Verification accepted!",
+            count: false,
           });
+        }
         } else if (data.message.includes("reject")) {
           this.setState({
             mailStatus: "rejected",
@@ -239,83 +258,118 @@ class Signup extends Component {
       isLoadingGetOtp,
       isLoadingVerifyOtp,
       mailStatus,
-      otpStatusMessage,
+      startingPhase,
+      confettiShown
     } = this.state;
 
     return (
+      <div className="full-page-login">
       <div className="signup-container">
-        <h2>Signup</h2>
+        <div className="header">
+        <img src = "https://res.cloudinary.com/dx97khgxd/image/upload/v1729914264/Screenshot_2024-10-26_091353-removebg-preview_h1oae1.png" className="main-logo1" alt = "logo1" />
+        <h2 className="head2">One time SignUp</h2>
+        </div>
 
-        <input
-          type="text"
-          name="name"
-          placeholder="Name"
-          onChange={this.handleInputChange}
-          required
-        />
+<input
+  type="text"
+  name="name"
+  placeholder="Name"
+  onChange={this.handleInputChange}
+  required
+  className="input1"
+  autoComplete="off"
+  autoCapitalize="words"
+/>
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={email}
-          onChange={this.handleInputChange}
-          required
-        />
+<input
+  type="email"
+  name="email"
+  placeholder="Email"
+  value={email}
+  onChange={this.handleInputChange}
+  required
+  className="input1"
+  autoComplete="off"
+  autoCapitalize="words"
+/>
+{
+  !confettiShown ? 
 
-        <button onClick={this.handleVerifyMail} disabled={isLoadingVerifyMail}>
-          {isLoadingVerifyMail ? (
+
+(<button onClick={this.handleVerifyMail} disabled={isLoadingVerifyMail} className="btn1">
+  {isLoadingVerifyMail ? (
+    <TailSpin height="24" width="24" color="#ffffff" ariaLabel="loading" />
+  ) : (
+    "Send Verification Mail"
+  )}
+</button>) : null
+
+  }
+
+{mailStatus === "pending" && startingPhase && (
+  <p style={{ color: "#FFA500", fontWeight: "bold", textAlign : "center" }}>
+    Your verification is in process. Please wait...
+  </p>
+)}
+{mailStatus === "accepted" && startingPhase && (
+  <p style={{ color: "#4CAF50", fontWeight: "bold",textAlign : "center" }}>
+    Congratulations! Your application has been approved.
+  </p>
+)}
+{mailStatus === "rejected" && startingPhase && (
+  <p style={{ color: "#FF0000", fontWeight: "bold",textAlign : "center" }}>
+    We regret to inform you that your application has been rejected.
+  </p>
+)}
+
+
+{mailStatus === "accepted" && startingPhase && (
+  <div className="otp-verification">
+    <button onClick={this.handleGetOtp} disabled={isLoadingGetOtp} className="btn1">
+      {isLoadingGetOtp ? (
+        <TailSpin height="24" width="24" color="#ffffff" ariaLabel="loading" />
+      ) : (
+        isOtpSent ? "Resend OTP" : "Get OTP"
+      )}
+    </button>
+  </div>
+)}
+
+{isOtpSent && (
+  <div>
+    {mailStatus === "accepted" && (
+      <div className="otp-input">
+        <h4>Enter OTP:</h4>
+        <div>
+        {otp.map((digit, index) => (
+          <input
+          className="input2"
+            key={index}
+            type="text"
+            value={digit}
+            maxLength="1"
+            onChange={(e) => this.handleOtpInputChange(e, index)}
+            onKeyDown={(e) => this.handleOtpBackspace(e, index)}
+          />
+          
+        ))}</div>
+        <button onClick={this.handleVerifyOtp} className="btn1" disabled={!isOtpComplete || isLoadingVerifyOtp}>
+          {isLoadingVerifyOtp ? (
             <TailSpin height="24" width="24" color="#ffffff" ariaLabel="loading" />
           ) : (
-            "Send Verification Mail"
+            "Verify OTP"
           )}
         </button>
+      </div>
+    )}
+   
+  </div>
+)}
 
-        {mailStatus === "pending" && <p>Verification in process...</p>}
-        {mailStatus === "accepted" && <p>{otpStatusMessage}</p>}
-        {mailStatus === "rejected" && <p>{otpStatusMessage}</p>}
+       <br/>
+      </div>
 
-        {mailStatus === "accepted" && (
-          <div className="otp-verification">
-            <button onClick={this.handleGetOtp} disabled={isLoadingGetOtp}>
-              {isLoadingGetOtp ? (
-                <TailSpin height="24" width="24" color="#ffffff" ariaLabel="loading" />
-              ) : (
-                isOtpSent ? "Resend OTP" : "Get OTP"
-              )}
-            </button>
-          </div>
-        )}
-
-        {isOtpSent && (
-          <div>
-            <h4>OTP Sent</h4>
-            {mailStatus === "accepted" && (
-              <div className="otp-input">
-                <h4>Enter OTP:</h4>
-                {otp.map((digit, index) => (
-                  <input
-                    key={index}
-                    type="text"
-                    value={digit}
-                    maxLength="1"
-                    onChange={(e) => this.handleOtpInputChange(e, index)}
-                    onKeyDown={(e) => this.handleOtpBackspace(e, index)}
-                  />
-                ))}
-                <button onClick={this.handleVerifyOtp} disabled={!isOtpComplete || isLoadingVerifyOtp}>
-                  {isLoadingVerifyOtp ? (
-                    <TailSpin height="24" width="24" color="#ffffff" ariaLabel="loading" />
-                  ) : (
-                    "Verify OTP"
-                  )}
-                </button>
-              </div>
-            )}
-          </div>
-        )}
-
-        {otpStatusMessage && <p>{otpStatusMessage}</p>}
+      <img src = "https://res.cloudinary.com/dx97khgxd/image/upload/v1729940305/undraw_chore_list_re_2lq8-removebg-preview_h9b55q.png" alt="img1" className="main-img"/> 
       </div>
     );
   }
