@@ -138,4 +138,12 @@ h4 {
     margin: 30px;
     box-sizing: content-box;
   }
+  .otp-input input {
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    font-size: 15px;
+    margin: 0 5px;
+  }
+  
 }

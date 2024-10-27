@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { io } from "socket.io-client";
 import { TailSpin } from "react-loader-spinner";
 import confetti from 'canvas-confetti'; // Import confetti animation library
+import {withRouter} from "react-router-dom"
 import "./index.css"; 
 
 class Signup extends Component {
@@ -25,13 +26,22 @@ class Signup extends Component {
       confettiShown: false, // New state variable to track confetti
     };
 
+    
+
     // Initialize the socket connection
     this.socket = io('https://sharp-instinctive-ceres.glitch.me'); // Updated to the new backend URL
   }
 
+
   componentDidMount() {
-    this.fetchVerificationStatus(); // Initial fetch
-    this.intervalId = setInterval(this.fetchVerificationStatus, 5000); 
+    const savedEmail = localStorage.getItem("userEmail");
+    if (savedEmail) {
+      
+      this.props.history.push("/face-verification");
+    } else {
+      this.fetchVerificationStatus();
+      this.intervalId = setInterval(this.fetchVerificationStatus, 5000);
+    }
   }
 
   componentWillUnmount() {
@@ -155,6 +165,7 @@ class Signup extends Component {
       const data = await response.json();
       if (response.ok) {
         this.setState({ isOtpSent: true });
+        
       } else {
         alert(data.message || "Error sending OTP");
       }
@@ -187,7 +198,10 @@ class Signup extends Component {
       const data = await response.json();
       if (response.ok) {
         this.setState({ isOtpVerified: true });
+        localStorage.setItem("userEmail", email);
         alert(data.message);
+        this.props.history.push("/face-recognition");
+        
       } else {
         alert(data.message || "Error verifying OTP");
       }
@@ -375,4 +389,4 @@ class Signup extends Component {
   }
 }
 
-export default Signup;
+export default withRouter(Signup);
