@@ -200,7 +200,7 @@ class Signup extends Component {
         this.setState({ isOtpVerified: true });
         localStorage.setItem("userEmail", email);
         alert(data.message);
-        this.props.history.push("/face-recognition");
+        this.props.history.push("/face-verification");
         
       } else {
         alert(data.message || "Error verifying OTP");
