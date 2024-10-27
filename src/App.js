@@ -8,7 +8,7 @@ function App() {
     <Router>
       <Switch>
         <Route exact path="/" component={Signup} />
-        <Route exact path="/face-recognition" component={FaceAuthorization} />
+        <Route exact path="/face-verification" component={FaceAuthorization} />
         <Route exact path = "/face-verification">
           <Redirect to="/face-recognition" />
         </Route>
