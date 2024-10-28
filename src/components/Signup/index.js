@@ -37,7 +37,7 @@ class Signup extends Component {
     const savedEmail = localStorage.getItem("userEmail");
     if (savedEmail) {
       
-      this.props.history.push("/face-verification");
+      this.props.history.push("/face-recognition");
     } else {
       this.fetchVerificationStatus();
       this.intervalId = setInterval(this.fetchVerificationStatus, 5000);
