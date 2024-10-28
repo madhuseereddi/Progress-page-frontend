@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { io } from "socket.io-client";
 import { TailSpin } from "react-loader-spinner";
 import confetti from 'canvas-confetti'; // Import confetti animation library
-import {withRouter} from "react-router-dom"
+import {withRouter,Redirect} from "react-router-dom"
 import "./index.css"; 
 
 class Signup extends Component {
@@ -38,6 +38,7 @@ class Signup extends Component {
     if (savedEmail) {
       
       this.props.history.push("/face-recognition");
+      <Redirect to="/face-verification" />
     } else {
       this.fetchVerificationStatus();
       this.intervalId = setInterval(this.fetchVerificationStatus, 5000);
