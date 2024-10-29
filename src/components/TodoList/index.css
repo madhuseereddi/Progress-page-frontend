@@ -217,6 +217,7 @@ body::-webkit-scrollbar {
   display: none;
 }
 
+
 /* Mobile Styles */
 @media (max-width: 768px) {
   .navbar {
@@ -298,6 +299,7 @@ body::-webkit-scrollbar {
     
   }
   
+  
 }
 .task-scroll {
   cursor: pointer; /* Indicate that the task is interactive */
@@ -318,3 +320,4 @@ body::-webkit-scrollbar {
   border-radius: 5px; /* Rounded corners */
   background-color: #f9f9f9; /* Light background for visibility */
 }
+

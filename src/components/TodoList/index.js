@@ -213,39 +213,41 @@ class TodoList extends Component {
                 </div>
 
                 <Popup open={popupOpen} onClose={this.closePopup} modal>
-                    <div className="popup-content">
-                        <h2>Last Week Tasks</h2>
-                        {Object.keys(lastWeekTasks).length > 0 ? (
-                            Object.keys(lastWeekTasks).map(date => (
-                                <div key={date}>
-                                    <h3>{new Date(date).toLocaleDateString()}</h3>
-                                    <table className="last-week-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Task</th>
-                                                <th>Date</th>
-                                                <th>Time</th>
-                                                <th>Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {lastWeekTasks[date].map(task => (
-                                                <tr key={task.id}>
-                                                    <td>{task.item}</td>
-                                                    <td>{new Date(task.created_at).toLocaleDateString()}</td>
-                                                    <td>{new Date(task.created_at).toLocaleTimeString()}</td>
-                                                    <td>{task.completed ? 'Completed' : 'Pending'}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            ))
-                        ) : (
-                            <p>No tasks found for the last week.</p>
-                        )}
-                    </div>
-                </Popup>
+    <div className="popup-content">
+        <button className="close-button" onClick={this.closePopup}>✖</button>
+        <h2 className="popup-header">Last Week Tasks</h2>
+        {Object.keys(lastWeekTasks).length > 0 ? (
+            Object.keys(lastWeekTasks).map(date => (
+                <div key={date} className="task-date-section">
+                    <h3 className="task-date">{new Date(date).toLocaleDateString()}</h3>
+                    <table className="last-week-table">
+                        <thead>
+                            <tr>
+                                <th>Task</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {lastWeekTasks[date].map(task => (
+                                <tr key={task.id}>
+                                    <td className="iiiii">{task.item}</td>
+                                    <td>{new Date(task.created_at).toLocaleDateString()}</td>
+                                    <td>{new Date(task.created_at).toLocaleTimeString()}</td>
+                                    <td>{task.completed ? 'Completed' : 'Pending'}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            ))
+        ) : (
+            <p>No tasks found for the last week.</p>
+        )}
+    </div>
+</Popup>
+
             </div>
         );
     }

@@ -2,12 +2,12 @@ import React, { useEffect, useState, useCallback } from "react";
 import * as faceapi from "face-api.js";
 import { ClipLoader } from "react-spinners"; // Import ClipLoader from react-spinners
 import WebcamCapture from "../WebcamCapture"; // Adjust the path to your WebcamCapture component
-import { Redirect , withRouter } from "react-router-dom"; // Import Redirect
+import { Redirect, withRouter } from "react-router-dom"; // Import Redirect
 import "./index.css"; // Make sure to include the CSS file
 
 const logoUrl = "https://res.cloudinary.com/dx97khgxd/image/upload/v1729914119/Screenshot_2024-10-26_091114-removebg-preview_uqj5ji.png";
 
-const FaceAuthorization = () => {
+const FaceAuthorization = (props) => {
   const [modelsLoaded, setModelsLoaded] = useState(false);
   const [savedFaceDescriptor, setSavedFaceDescriptor] = useState(null);
   const [detected, setDetected] = useState(false);
@@ -15,7 +15,10 @@ const FaceAuthorization = () => {
   const [initialSetupDone, setInitialSetupDone] = useState(false);
   const [loading, setLoading] = useState(false); // State for loading
   const [redirect, setRedirect] = useState(false); // State for redirect
-
+  const query = new URLSearchParams(window.location.search);
+  const email = query.get("email");
+  const emailSuffix = email ? email.split("@")[0] : ""; // Get the part before the '@'
+ 
   useEffect(() => {
     const loadModels = async () => {
       try {
@@ -37,7 +40,7 @@ const FaceAuthorization = () => {
 
   useEffect(() => {
     const fetchSavedFaceDescriptor = async () => {
-      const localDescriptor = localStorage.getItem("savedFaceDescriptor");
+      const localDescriptor = localStorage.getItem(`savedFaceDescriptor_${emailSuffix}`);
       if (localDescriptor) {
         setSavedFaceDescriptor(new Float32Array(JSON.parse(localDescriptor)));
         setInitialSetupDone(true);
@@ -51,7 +54,7 @@ const FaceAuthorization = () => {
         if (data.length > 0) {
           const descriptor = new Float32Array(JSON.parse(data[0].imgSrc));
           setSavedFaceDescriptor(descriptor);
-          localStorage.setItem("savedFaceDescriptor", JSON.stringify(Array.from(descriptor)));
+          localStorage.setItem(`savedFaceDescriptor_${emailSuffix}`, JSON.stringify(Array.from(descriptor)));
           setInitialSetupDone(true);
         }
       } catch (err) {
@@ -60,7 +63,7 @@ const FaceAuthorization = () => {
     };
 
     fetchSavedFaceDescriptor();
-  }, []);
+  }, [emailSuffix]);
 
   const handleCapture = useCallback(
     async (imageSrc) => {
@@ -82,25 +85,29 @@ const FaceAuthorization = () => {
           const descriptor = detection.descriptor;
 
           if (!initialSetupDone) {
-            // Save face descriptor
+            // Save face descriptor with email suffix
             setSavedFaceDescriptor(descriptor);
             await fetch("https://sharp-instinctive-ceres.glitch.me/save_face_data", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ day: new Date().toISOString().split("T")[0], imgSrc: JSON.stringify(Array.from(descriptor)) }),
+              body: JSON.stringify({ 
+                day: new Date().toISOString().split("T")[0], 
+                imgSrc: JSON.stringify(Array.from(descriptor)), 
+                email: email // Include email in the body
+              }),
             });
-            localStorage.setItem("savedFaceDescriptor", JSON.stringify(Array.from(descriptor)));
+            localStorage.setItem(`savedFaceDescriptor_${emailSuffix}`, JSON.stringify(Array.from(descriptor))); // Save with email suffix
             setInitialSetupDone(true);
             alert("Face saved successfully. You will be recognized automatically next time.");
           } else {
             // Recognize face
             const faceMatcher = new faceapi.FaceMatcher(
-              [new faceapi.LabeledFaceDescriptors("savedUser", [savedFaceDescriptor])],
+              [new faceapi.LabeledFaceDescriptors(`${email}`, [savedFaceDescriptor])], // Use email in label
               0.6
             );
             const bestMatch = faceMatcher.findBestMatch(detection.descriptor);
 
-            if (bestMatch.label === "savedUser") {
+            if (bestMatch.label === email) {
               setDetected(true);
               alert("Face recognized. Access granted!");
               setError(""); // Clear any previous error
@@ -120,13 +127,11 @@ const FaceAuthorization = () => {
         setLoading(false); // Stop loading
       }
     },
-    [modelsLoaded, savedFaceDescriptor, initialSetupDone]
+    [modelsLoaded, savedFaceDescriptor, initialSetupDone, email, emailSuffix] // Add email and emailSuffix to dependencies
   );
 
   if (redirect) {
-  
     return <Redirect to="/todolist" />; // Redirect to the Todolist page
-
   }
 
   return (

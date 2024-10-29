@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { io } from "socket.io-client";
 import { TailSpin } from "react-loader-spinner";
 import confetti from 'canvas-confetti'; // Import confetti animation library
-import {withRouter,Redirect} from "react-router-dom"
+import { withRouter, Redirect } from "react-router-dom";
 import "./index.css"; 
 
 class Signup extends Component {
@@ -26,19 +26,16 @@ class Signup extends Component {
       confettiShown: false, // New state variable to track confetti
     };
 
-    
-
     // Initialize the socket connection
     this.socket = io('https://sharp-instinctive-ceres.glitch.me'); // Updated to the new backend URL
   }
 
-
   componentDidMount() {
     const savedEmail = localStorage.getItem("userEmail");
+    console.log(savedEmail); // Log savedEmail to check its value
     if (savedEmail) {
-      
-      this.props.history.push("/face-recognition");
-      <Redirect to="/face-verification" />
+      this.props.history.push(`/face-recognition?email=${savedEmail}`);
+      return; // Prevent further execution if the user is already signed up
     } else {
       this.fetchVerificationStatus();
       this.intervalId = setInterval(this.fetchVerificationStatus, 5000);
@@ -54,7 +51,7 @@ class Signup extends Component {
     confetti({
       particleCount: 200,
       spread: 70,
-      origin: {x : 0.25, y: 0.75 },
+      origin: { x: 0.25, y: 0.75 },
     });
   };
 
@@ -133,7 +130,7 @@ class Signup extends Component {
         this.setState({
           uniqueId: data.uniqueId,
           mailStatus: "pending",
-          startingPhase : true
+          startingPhase: true,
         });
         alert(data.message);
       } else {
@@ -165,8 +162,7 @@ class Signup extends Component {
 
       const data = await response.json();
       if (response.ok) {
-        this.setState({ isOtpSent: true });
-        
+        this.handleOtpSent(data); // Call the method to update OTP sent status
       } else {
         alert(data.message || "Error sending OTP");
       }
@@ -199,9 +195,11 @@ class Signup extends Component {
       const data = await response.json();
       if (response.ok) {
         this.setState({ isOtpVerified: true });
-        localStorage.setItem("userEmail", email);
+        localStorage.setItem("signup_" + email, email); // Store the email in local storage
+        localStorage.setItem("userEmail", email); // Store the user email in local storage
         alert(data.message);
-        this.props.history.push("/face-verification");
+        const emailSuffix = email ? email.split("@")[0] : "";
+        this.props.history.push(`/face-recognition?email=${email}`);
         
       } else {
         alert(data.message || "Error verifying OTP");
@@ -214,7 +212,6 @@ class Signup extends Component {
     }
   };
 
-  
   fetchVerificationStatus = async () => {
     const { email } = this.state;
     
@@ -239,13 +236,13 @@ class Signup extends Component {
             this.confettiEffect();
             this.setState({ confettiShown: true }); // Set the confettiShown to true
           }
-           if(this.state.count === true){          
+           if (this.state.count === true) {          
             this.setState({
-            mailStatus: "accepted",
-            otpStatusMessage: "Verification accepted!",
-            count: false,
-          });
-        }
+              mailStatus: "accepted",
+              otpStatusMessage: "Verification accepted!",
+              count: false,
+            });
+          }
         } else if (data.message.includes("reject")) {
           this.setState({
             mailStatus: "rejected",
@@ -390,4 +387,5 @@ class Signup extends Component {
   }
 }
 
-export default withRouter(Signup);
+
+export default withRouter(Signup)
