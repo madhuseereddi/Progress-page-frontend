@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import * as faceapi from "face-api.js";
 import { ClipLoader } from "react-spinners"; // Import ClipLoader from react-spinners
 import WebcamCapture from "../WebcamCapture"; // Adjust the path to your WebcamCapture component
+import { Redirect , withRouter } from "react-router-dom"; // Import Redirect
 import "./index.css"; // Make sure to include the CSS file
 
 const logoUrl = "https://res.cloudinary.com/dx97khgxd/image/upload/v1729914119/Screenshot_2024-10-26_091114-removebg-preview_uqj5ji.png";
@@ -13,6 +14,7 @@ const FaceAuthorization = () => {
   const [error, setError] = useState("");
   const [initialSetupDone, setInitialSetupDone] = useState(false);
   const [loading, setLoading] = useState(false); // State for loading
+  const [redirect, setRedirect] = useState(false); // State for redirect
 
   useEffect(() => {
     const loadModels = async () => {
@@ -102,6 +104,7 @@ const FaceAuthorization = () => {
               setDetected(true);
               alert("Face recognized. Access granted!");
               setError(""); // Clear any previous error
+              setRedirect(true); // Set redirect to true
             } else {
               setDetected(false);
               setError("Face not recognized. Access denied.");
@@ -119,6 +122,12 @@ const FaceAuthorization = () => {
     },
     [modelsLoaded, savedFaceDescriptor, initialSetupDone]
   );
+
+  if (redirect) {
+  
+    return <Redirect to="/todolist" />; // Redirect to the Todolist page
+
+  }
 
   return (
     <div className="modal-backdrop">
@@ -145,4 +154,4 @@ const FaceAuthorization = () => {
   );
 };
 
-export default FaceAuthorization;
+export default withRouter(FaceAuthorization);

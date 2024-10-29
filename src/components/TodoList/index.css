@@ -1,3 +1,320 @@
-ul{
-    color: black;
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+.navbar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #6200ea;
+  color: white;
+  padding: 10px;
+}
+
+.fff {
+  max-height: 100vh;
+}
+
+.logo {
+  width: 130px;
+  margin: 0;
+  margin-left: 20px;
+}
+
+.navbar-right {
+  display: flex;
+}
+
+.details-button {
+  background-color: #ff4081;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  margin: 0;
+}
+
+.todo-modal {
+  padding: 2rem;
+  background-color: #f9f9f9;
+}
+
+.modal-title {
+  font-size: 1.5rem;
+}
+
+.input-group {
+  margin-bottom: 1rem;
+}
+
+.input-label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.work-input {
+  width: calc(100% - 120px); /* Adjusted for button space */
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 15px;
+  transition: box-shadow 0.3s ease; /* Smooth transition for shadow */
+  color: gray;
+  outline: 0px;
+  border: 0.5px solid lightgray;
+}
+
+.work-input:focus {
+  box-shadow: 0px 0px 2px 2px rgba(173, 216, 230, 0.668); /* Light blue shadow on focus */
+  border-color: lightblue; /* Optional: change border color to match shadow */
+}
+
+.submit-button {
+  background-color: #6200ea;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  height: 35px;
+}
+
+.todo-list {
+  list-style: none;
+  padding: 0;
+}
+
+.iii {
+  max-height: 200px;
+  overflow: auto;
+}
+
+.todo-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.todo-table th, .todo-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center; /* Center-align the text */
+}
+
+.todo-table th {
+  background-color: #6200ea;
+  color: white;
+}
+
+.task-scroll {
+  display: inline-block;
+  max-width: 400px; /* Limit width of the task text */
+  overflow-x: auto; /* Enable horizontal scrolling */
+  white-space: nowrap; /* Prevent line breaks */
+}
+
+.task-text {
+  display: inline-block;
+  max-width: 100%;
+  overflow: auto; /* Enable scrolling for overflowing text */
+  white-space: nowrap; /* Prevent text from wrapping to a new line */
+}
+
+.task-text::-webkit-scrollbar {
+  display: none; /* Hide scrollbar */
+}
+
+.delete-button {
+  background-color: #ff1744;
+  color: white;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  margin: 0px;
+  font-size: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.no-tasks {
+  text-align: center;
+}
+
+.popup-content {
+  width: 90%;
+  max-height: 80vh; /* Set a maximum height for the popup */
+  overflow-y: auto; /* Enable vertical scrolling */
+  padding: 20px; /* Add padding for better appearance */
+  background-color: #fff; /* Set a white background for the popup */
+  border-radius: 8px; /* Add rounded corners */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
+}
+
+.popup-content::-webkit-scrollbar {
+  display: none;
+}
+
+.last-week-table {
+  width: 100%; /* Ensure table uses full width of the popup */
+  border-collapse: collapse; /* Collapse borders for better spacing */
+}
+
+.last-week-table th, .last-week-table td {
+  padding: 10px; /* Add padding to table cells */
+  border: 1px solid #ccc; /* Add border to table cells */
+  text-align: left; /* Align text to the left */
+  width: 25%; /* Set equal width for each column (4 columns total) */
+}
+
+.last-week-table th {
+  background-color: #6200ea; /* Header background color */
+  color: white; /* Header text color */
+}
+
+.last-week-table tr:nth-child(even) {
+  background-color: #f2f2f2; /* Light gray for even rows */
+}
+
+.last-week-table tr:hover {
+  background-color: #d9f9d9; /* Light green for hover effect */
+}
+
+.close-button {
+  margin-top: 20px; /* Space above the close button */
+  background-color: #f44336; /* Red background for close button */
+  color: white; /* White text for the close button */
+  border: none; /* Remove border */
+  padding: 10px 15px; /* Add padding */
+  border-radius: 5px; /* Round corners */
+  cursor: pointer; /* Pointer cursor on hover */
+}
+
+.close-button:hover {
+  background-color: #c62828; /* Darker red on hover */
+}
+
+.loader {
+  margin: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.table-body {
+  max-height: calc(100vh - 290px);
+  overflow: auto;
+}
+
+.table-body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: row; /* Stack elements vertically */
+    padding: 5px; /* Reduce padding */
+  }
+  .table-body {
+    max-height: calc(100vh - 250px);
+    overflow: auto;
+  }
+  
+
+  .logo {
+    width: 100px; /* Reduce logo size */
+  }
+
+  .modal-title {
+    font-size: 1.2rem; /* Decrease title font size */
+  }
+
+  .input-label {
+    font-size: 14px; /* Decrease input label size */
+  }
+
+  .work-input {
+    font-size: 14px; /* Decrease input font size */
+  }
+
+  .submit-button,
+  .details-button,
+  .delete-button,
+  .close-button {
+    padding: 0.4rem 0.8rem; /* Decrease button padding */
+    font-size: 14px; /* Decrease button font size */
+  }
+
+  .todo-table th,
+  .todo-table td {
+    font-size: 12px; /* Decrease font size for table cells */
+    padding: 6px; /* Decrease padding for table cells */
+  }
+
+  .task-scroll {
+    max-width: 20ch; /* Limit width to 20 characters */
+    overflow-x: auto; /* Enable horizontal scrolling */
+    white-space: nowrap; /* Prevent line breaks */
+  }
+
+  .popup-content {
+    padding: 10px; /* Reduce padding in the popup */
+  }
+
+  .last-week-table th,
+  .last-week-table td {
+    font-size: 12px; /* Decrease font size for last week table */
+    padding: 8px; /* Decrease padding for last week table */
+  }
+
+  /* Additional styling to ensure that task text scrolls if too long */
+  .task-text {
+    display: inline-block;
+    max-width: 100%; /* Allow full width usage */
+    overflow: hidden; /* Hide overflow */
+    text-overflow: ellipsis; /* Show ellipsis for overflow */
+    white-space: nowrap; /* Prevent text wrapping */
+  }
+  .delete-button {
+    background-color: #ff1744;
+    color: white;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    margin: 0px;
+    font-size: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    
+  }
+  
+}
+.task-scroll {
+  cursor: pointer; /* Indicate that the task is interactive */
+}
+
+.task-text {
+  transition: background-color 0.3s; /* Smooth background transition */
+}
+
+.task-text:hover {
+  background-color: #f0f0f0; /* Highlight on hover */
+}
+
+.expanded-details {
+  margin-top: 10px; /* Adds space above the details */
+  padding: 10px; /* Adds padding inside the container */
+  border: 1px solid #6200ea; /* Border color that matches your theme */
+  border-radius: 5px; /* Rounded corners */
+  background-color: #f9f9f9; /* Light background for visibility */
 }
