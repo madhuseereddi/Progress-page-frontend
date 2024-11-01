@@ -6,76 +6,19 @@
       rel="icon"
       href="https://res.cloudinary.com/dx97khgxd/image/upload/v1730437919/Screenshot_2024_1026_100527-removebg-preview_h9ami8.png"
     />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
+    <meta name="description" content="Web site created using create-react-app" />
     <link
       rel="apple-touch-icon"
       href="https://res.cloudinary.com/dx97khgxd/image/upload/v1730437919/Screenshot_2024_1026_100527-removebg-preview_h9ami8.png"
     />
-    <link
-      rel="manifest"
-      href="https://res.cloudinary.com/dx97khgxd/image/upload/v1730437919/Screenshot_2024_1026_100527-removebg-preview_h9ami8.png"
-    />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
     <title>Quotidian</title>
-    <style>
-      /* Styles for the download banner */
-      #downloadBanner {
-        display: none;
-        position: fixed;
-        bottom: 0;
-        width: 100%;
-        background-color: #2196f3;
-        color: white;
-        text-align: center;
-        padding: 15px;
-        z-index: 1000;
-      }
-      #downloadBanner button {
-        margin-left: 10px;
-        background-color: #ff4081;
-        color: white;
-        border: none;
-        padding: 8px 12px;
-        cursor: pointer;
-      }
-    </style>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-
-    <!-- Download Banner -->
-    <div id="downloadBanner">
-      Download our mobile app for the best experience!
-      <button onclick="downloadApp()">Download</button>
-      <button onclick="dismissBanner()">Dismiss</button>
-    </div>
-
-    <script>
-      // Detect if the user is on a mobile device
-      function isMobileDevice() {
-        return /Mobi|Android/i.test(navigator.userAgent);
-      }
-
-      // Show download banner if on mobile
-      if (isMobileDevice()) {
-        document.getElementById('downloadBanner').style.display = 'block';
-      }
-
-      // Download button functionality
-      function downloadApp() {
-        // Replace with your app's download link
-        window.location.href = 'https://progress-fe.onrender.com/';
-      }
-
-      // Dismiss button functionality
-      function dismissBanner() {
-        document.getElementById('downloadBanner').style.display = 'none';
-      }
-    </script>
   </body>
 </html>
